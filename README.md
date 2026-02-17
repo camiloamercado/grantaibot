@@ -1,2 +1,0 @@
-# grantaibot
-AIBOT
