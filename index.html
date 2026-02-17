@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grant AI Alliance Master</title>
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:   #0d2244;
+      --navy2:  #15336a;
+      --gold:   #c8a84b;
+      --gold2:  #e6c76d;
+      --slate:  #f2f5fa;
+      --white:  #ffffff;
+      --border: #dce3ee;
+      --text:   #1a2540;
+      --muted:  #6b7a99;
+      --green:  #1a7a4a;
+      --red:    #b0282f;
+      --amber:  #b87a00;
+      --radius: 10px;
+      --shadow: 0 2px 16px rgba(13,34,68,.12);
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--slate);
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    /* ── Layout ── */
+    .app {
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy2) 100%);
+      color: var(--white);
+      padding: 14px 28px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      border-bottom: 3px solid var(--gold);
+      box-shadow: var(--shadow);
+      z-index: 10;
+    }
+
+    .header-logo {
+      width: 48px; height: 48px;
+      background: var(--gold);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .header-titles { flex: 1; }
+
+    .header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      color: var(--gold2);
+      line-height: 1.2;
+    }
+
+    .header p {
+      font-size: 12px;
+      color: rgba(255,255,255,.75);
+      margin-top: 2px;
+      letter-spacing: .02em;
+    }
+
+    .header-badges {
+      display: flex; gap: 8px; align-items: center;
+    }
+
+    .badge {
+      background: rgba(200,168,75,.18);
+      border: 1px solid var(--gold);
+      color: var(--gold2);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 20px;
+      letter-spacing: .04em;
+    }
+
+    /* ── Main body ── */
+    .body {
+      display: grid;
+      grid-template-columns: 270px 1fr 230px;
+      gap: 0;
+      overflow: hidden;
+    }
+
+    /* ── Panels ── */
+    .panel {
+      background: var(--white);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 14px 16px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      color: var(--muted);
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+      background: var(--slate);
+    }
+
+    /* ── Left Panel ── */
+    .left-panel { }
+
+    .upload-zone {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .upload-btn {
+      width: 100%;
+      background: var(--navy);
+      color: var(--white);
+      border: none;
+      border-radius: var(--radius);
+      padding: 11px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex; align-items: center; gap: 8px;
+      justify-content: center;
+      transition: background .2s, transform .1s;
+      letter-spacing: .01em;
+    }
+
+    .upload-btn:hover { background: var(--navy2); transform: translateY(-1px); }
+    .upload-btn:active { transform: translateY(0); }
+
+    .upload-btn svg { flex-shrink: 0; }
+
+    .upload-hint {
+      margin-top: 8px;
+      font-size: 11px;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .file-types {
+      display: flex; flex-wrap: wrap; gap: 4px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border);
+    }
+
+    .file-type-tag {
+      background: var(--slate);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 20px;
+    }
+
+    .files-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 12px;
+    }
+
+    .files-list-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      margin-bottom: 8px;
+      padding: 0 4px;
+    }
+
+    .file-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      margin-bottom: 4px;
+      border: 1px solid var(--border);
+      background: var(--slate);
+      position: relative;
+      transition: border-color .2s;
+    }
+
+    .file-item:hover { border-color: var(--navy); }
+
+    .file-icon {
+      width: 28px; height: 28px;
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .file-icon.pdf  { background: #fdecea; }
+    .file-icon.doc  { background: #e8f0fe; }
+    .file-icon.xls  { background: #e6f4ea; }
+    .file-icon.txt  { background: #fef3e2; }
+    .file-icon.misc { background: #f3e8fd; }
+
+    .file-info { flex: 1; min-width: 0; }
+
+    .file-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .file-meta {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 1px;
+    }
+
+    .file-status {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+
+    .empty-files {
+      text-align: center;
+      padding: 24px 12px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .empty-files-icon { font-size: 32px; margin-bottom: 8px; }
+
+    /* ── Main Chat Panel ── */
+    .main-panel {
+      border-right: 1px solid var(--border);
+      border-left: none;
+      display: flex;
+      flex-direction: column;
+      background: #f7f9fc;
+    }
+
+    .chat-topbar {
+      padding: 10px 20px;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .chat-status {
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: .45; }
+    }
+
+    .chat-status-text {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .chat-status-text span {
+      color: var(--green);
+      font-weight: 600;
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Welcome message */
+    .welcome-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px 24px;
+      box-shadow: var(--shadow);
+      max-width: 600px;
+      align-self: center;
+      margin: 10px auto 6px;
+      width: 100%;
+    }
+
+    .welcome-card h2 {
+      font-size: 16px;
+      color: var(--navy);
+      margin-bottom: 8px;
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    .welcome-card p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .welcome-steps {
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .welcome-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: var(--slate);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 12.5px;
+      color: var(--text);
+    }
+
+    .step-num {
+      background: var(--navy);
+      color: var(--white);
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* Chat bubbles */
+    .message {
+      display: flex;
+      gap: 10px;
+      max-width: 85%;
+    }
+
+    .message.user {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    .message.assistant {
+      align-self: flex-start;
+    }
+
+    .avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+      align-self: flex-end;
+    }
+
+    .avatar.user-avatar { background: var(--navy); color: var(--gold2); font-size: 13px; font-weight: 700; }
+    .avatar.ai-avatar   { background: var(--gold); }
+
+    .bubble {
+      padding: 12px 16px;
+      border-radius: 14px;
+      font-size: 13.5px;
+      line-height: 1.65;
+      box-shadow: 0 1px 4px rgba(0,0,0,.07);
+    }
+
+    .message.user .bubble {
+      background: var(--navy);
+      color: var(--white);
+      border-bottom-right-radius: 4px;
+    }
+
+    .message.assistant .bubble {
+      background: var(--white);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-bottom-left-radius: 4px;
+    }
+
+    /* Structured response sections */
+    .response-section {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+
+    .response-section:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+
+    .section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .section-label.purpose  { color: var(--navy); }
+    .section-label.roles    { color: var(--green); }
+    .section-label.docs     { color: var(--amber); }
+    .section-label.steps    { color: var(--navy2); }
+    .section-label.tips     { color: var(--green); }
+    .section-label.risk     { color: var(--red); }
+    .section-label.source   { color: var(--muted); }
+
+    .section-body {
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .step-list { list-style: none; counter-reset: step-counter; }
+    .step-list li {
+      counter-increment: step-counter;
+      display: flex; gap: 8px;
+      margin-bottom: 5px;
+    }
+    .step-list li::before {
+      content: counter(step-counter);
+      background: var(--navy);
+      color: var(--white);
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      font-size: 10px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .bullet-list { list-style: none; }
+    .bullet-list li { display: flex; gap: 6px; margin-bottom: 4px; }
+    .bullet-list li::before { content: "•"; color: var(--gold); font-weight: 700; }
+
+    .compliance-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 20px;
+      margin-top: 4px;
+    }
+    .compliance-tag.warning { background: #fff3cd; color: #856404; border: 1px solid #ffd700; }
+    .compliance-tag.risk    { background: #fdecea; color: var(--red); border: 1px solid #f5c6cb; }
+    .compliance-tag.ok      { background: #d4edda; color: var(--green); border: 1px solid #c3e6cb; }
+
+    .source-ref {
+      font-size: 11px;
+      color: var(--muted);
+      font-style: italic;
+      margin-top: 6px;
+    }
+
+    .not-available {
+      background: #fef3e2;
+      border: 1px solid #ffc107;
+      border-radius: 8px;
+      padding: 12px 14px;
+      color: var(--amber);
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Typing indicator */
+    .typing-indicator {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      padding: 12px 16px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      border-bottom-left-radius: 4px;
+      width: fit-content;
+    }
+
+    .typing-dot {
+      width: 7px; height: 7px;
+      background: var(--muted);
+      border-radius: 50%;
+      animation: typingBounce 1.2s infinite;
+    }
+    .typing-dot:nth-child(2) { animation-delay: .2s; }
+    .typing-dot:nth-child(3) { animation-delay: .4s; }
+
+    @keyframes typingBounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30%            { transform: translateY(-6px); }
+    }
+
+    /* ── Chat Input ── */
+    .chat-input-area {
+      padding: 14px 20px;
+      background: var(--white);
+      border-top: 1px solid var(--border);
+    }
+
+    .chat-form {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+
+    .chat-input-wrap {
+      flex: 1;
+      position: relative;
+    }
+
+    .chat-input {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-family: inherit;
+      color: var(--text);
+      resize: none;
+      outline: none;
+      transition: border-color .2s;
+      max-height: 120px;
+      min-height: 44px;
+      line-height: 1.5;
+    }
+
+    .chat-input:focus { border-color: var(--navy2); }
+
+    .send-btn {
+      background: var(--navy);
+      color: var(--white);
+      border: none;
+      border-radius: 10px;
+      width: 44px;
+      height: 44px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: background .2s, transform .1s;
+    }
+
+    .send-btn:hover  { background: var(--navy2); transform: translateY(-1px); }
+    .send-btn:active { transform: translateY(0); }
+    .send-btn:disabled { opacity: .4; cursor: default; transform: none; }
+
+    .input-hint {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 6px;
+      text-align: center;
+    }
+
+    /* ── Right Panel ── */
+    .right-panel {
+      background: var(--white);
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .quick-section {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .quick-section-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      margin-bottom: 8px;
+    }
+
+    .quick-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: var(--slate);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 8px 10px;
+      font-size: 12px;
+      font-family: inherit;
+      color: var(--text);
+      cursor: pointer;
+      margin-bottom: 5px;
+      transition: background .15s, border-color .15s, transform .1s;
+      line-height: 1.45;
+    }
+
+    .quick-btn:hover {
+      background: var(--navy);
+      color: var(--white);
+      border-color: var(--navy);
+      transform: translateX(2px);
+    }
+
+    .compliance-checklist {
+      display: flex; flex-direction: column; gap: 5px;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      font-size: 11.5px;
+      color: var(--text);
+      padding: 5px 8px;
+      border-radius: 6px;
+      background: var(--slate);
+    }
+
+    .check-icon { flex-shrink: 0; margin-top: 1px; }
+
+    .role-item {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 12px;
+      padding: 6px 8px;
+      border-radius: 7px;
+      background: var(--slate);
+      margin-bottom: 4px;
+      color: var(--text);
+    }
+
+    .role-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* Hidden file input */
+    #fileInput { display: none; }
+
+    /* ── API Key Banner ── */
+    .api-banner {
+      background: #fff8e1;
+      border-bottom: 2px solid var(--gold);
+      padding: 9px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12.5px;
+      color: #6b4c00;
+      flex-wrap: wrap;
+    }
+
+    .api-banner.connected {
+      background: #f0fdf4;
+      border-color: var(--green);
+      color: #14532d;
+    }
+
+    .api-banner-icon { font-size: 16px; flex-shrink: 0; }
+
+    .api-key-form {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .api-key-input {
+      flex: 1;
+      padding: 5px 10px;
+      border: 1.5px solid #fcd34d;
+      border-radius: 7px;
+      font-size: 12px;
+      font-family: 'Courier New', monospace;
+      color: var(--text);
+      outline: none;
+      min-width: 0;
+      background: #fff;
+      transition: border-color .2s;
+    }
+
+    .api-key-input:focus { border-color: var(--gold); }
+
+    .api-key-input.connected-input {
+      border-color: var(--green);
+      color: var(--green);
+      background: #f0fdf4;
+      font-style: italic;
+    }
+
+    .api-save-btn {
+      background: var(--navy);
+      color: var(--white);
+      border: none;
+      border-radius: 7px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background .2s;
+      flex-shrink: 0;
+    }
+
+    .api-save-btn:hover { background: var(--navy2); }
+
+    .api-save-btn.clear-btn {
+      background: #e5e7eb;
+      color: var(--text);
+    }
+
+    .api-save-btn.clear-btn:hover { background: #d1d5db; }
+
+    .api-help-link {
+      color: #b45309;
+      font-size: 11.5px;
+      text-decoration: underline;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .api-status-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #fbbf24;
+      flex-shrink: 0;
+    }
+    .api-status-dot.connected { background: var(--green); }
+
+    /* Scrollbar styling */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+    /* Responsive tweaks */
+    @media (max-width: 900px) {
+      .body { grid-template-columns: 220px 1fr; }
+      .right-panel { display: none; }
+    }
+
+    @media (max-width: 620px) {
+      .body { grid-template-columns: 1fr; }
+      .left-panel { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ══ HEADER ══ -->
+  <header class="header">
+    <div class="header-logo">🏛️</div>
+    <div class="header-titles">
+      <h1>GRANT AI ALLIANCE MASTER</h1>
+      <p>Grants Management Knowledge &amp; Compliance Assistant</p>
+    </div>
+    <div class="header-badges">
+      <span class="badge">🔒 Compliance</span>
+      <span class="badge">📋 Policy-Driven</span>
+      <span class="badge" id="docCountBadge">0 Docs Loaded</span>
+    </div>
+  </header>
+
+  <!-- ══ API KEY BANNER ══ -->
+  <div class="api-banner" id="apiBanner">
+    <span class="api-status-dot" id="apiDot"></span>
+    <span class="api-banner-icon">🔑</span>
+    <strong>API Key Required:</strong>
+    <div class="api-key-form">
+      <input
+        type="password"
+        class="api-key-input"
+        id="apiKeyInput"
+        placeholder="Paste your Anthropic API key here (sk-ant-...)"
+        autocomplete="off"
+      />
+      <button class="api-save-btn" onclick="saveApiKey()">Connect</button>
+    </div>
+    <a class="api-help-link" href="https://console.anthropic.com" target="_blank">Get API Key ↗</a>
+  </div>
+
+  <!-- ══ BODY ══ -->
+  <div class="body">
+
+    <!-- ══ LEFT PANEL ══ -->
+    <aside class="panel left-panel">
+      <div class="panel-header">📁 Knowledge Base</div>
+
+      <div class="upload-zone">
+        <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Upload Manuals &amp; Policies
+        </button>
+        <input type="file" id="fileInput" multiple accept=".pdf,.doc,.docx,.txt,.xlsx,.xls,.csv,.pptx,.ppt,.md" onchange="handleFileUpload(event)" />
+        <p class="upload-hint">Upload all grant documentation to activate AI knowledge base</p>
+        <div class="file-types">
+          <span class="file-type-tag">PDF</span>
+          <span class="file-type-tag">DOCX</span>
+          <span class="file-type-tag">XLSX</span>
+          <span class="file-type-tag">TXT</span>
+          <span class="file-type-tag">PPTX</span>
+        </div>
+      </div>
+
+      <div class="files-list">
+        <div class="files-list-title">Uploaded Files</div>
+        <div id="fileListContainer">
+          <div class="empty-files">
+            <div class="empty-files-icon">📄</div>
+            No documents uploaded yet.<br/>Upload manuals, policies, SOPs &amp; annexes to begin.
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ══ MAIN CHAT PANEL ══ -->
+    <main class="main-panel panel">
+      <div class="chat-topbar">
+        <div class="chat-status"></div>
+        <span class="chat-status-text">AI Advisor is <span>Online</span> — Responding from uploaded documentation only</span>
+      </div>
+
+      <div class="chat-messages" id="chatMessages">
+        <!-- Welcome card -->
+        <div class="welcome-card" id="welcomeCard">
+          <h2>🏛️ Welcome to Grant AI Alliance Master</h2>
+          <p>Your internal Grants Management compliance advisor. This assistant responds <strong>exclusively</strong> from your uploaded organizational documentation — no invented policies, no guessed thresholds.</p>
+          <div class="welcome-steps">
+            <div class="welcome-step">
+              <div class="step-num">1</div>
+              <div><strong>Upload your documents</strong> using the left panel — manuals, SOPs, donor annexes, policies &amp; organigrams.</div>
+            </div>
+            <div class="welcome-step">
+              <div class="step-num">2</div>
+              <div><strong>Ask any grants question</strong> — eligibility, approvals, process steps, roles &amp; compliance rules.</div>
+            </div>
+            <div class="welcome-step">
+              <div class="step-num">3</div>
+              <div><strong>Get structured guidance</strong> — step-by-step, compliance-focused, with document references.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chat-input-area">
+        <div class="chat-form">
+          <div class="chat-input-wrap">
+            <textarea
+              class="chat-input"
+              id="chatInput"
+              placeholder="Ask a grants management question… e.g. How do I process a budget modification?"
+              rows="1"
+              onkeydown="handleKeyDown(event)"
+              oninput="autoResize(this)"
+            ></textarea>
+          </div>
+          <button class="send-btn" id="sendBtn" onclick="sendMessage()" title="Send">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+        <p class="input-hint">⚠️ Responses are based solely on uploaded documents. Verify critical decisions with your supervisor. · API key stored in memory only — never saved to disk.</p>
+      </div>
+    </main>
+
+    <!-- ══ RIGHT PANEL ══ -->
+    <aside class="right-panel">
+      <div class="panel-header">⚡ Quick Help</div>
+
+      <div class="quick-section">
+        <div class="quick-section-title">📋 Process Guidance</div>
+        <button class="quick-btn" onclick="useQuickPrompt('How do I process a grant budget modification?')">Budget Modification Process</button>
+        <button class="quick-btn" onclick="useQuickPrompt('What documents are required before disbursement?')">Pre-Disbursement Docs</button>
+        <button class="quick-btn" onclick="useQuickPrompt('How do I prepare a financial report for a donor?')">Financial Reporting Steps</button>
+        <button class="quick-btn" onclick="useQuickPrompt('What is the procurement process for grants?')">Procurement Process</button>
+      </div>
+
+      <div class="quick-section">
+        <div class="quick-section-title">✅ Compliance Checks</div>
+        <button class="quick-btn" onclick="useQuickPrompt('What costs are eligible under donor funding?')">Eligible Cost Categories</button>
+        <button class="quick-btn" onclick="useQuickPrompt('What are the audit documentation requirements?')">Audit Requirements</button>
+        <button class="quick-btn" onclick="useQuickPrompt('What are the key compliance risks in grants management?')">Compliance Risk Flags</button>
+      </div>
+
+      <div class="quick-section">
+        <div class="quick-section-title">👤 Role Clarifications</div>
+        <button class="quick-btn" onclick="useQuickPrompt('Who approves financial reports in the grants unit?')">Report Approval Authority</button>
+        <button class="quick-btn" onclick="useQuickPrompt('What is the escalation pathway for compliance issues?')">Escalation Pathway</button>
+        <button class="quick-btn" onclick="useQuickPrompt('Who is responsible for grant closeout procedures?')">Closeout Responsibility</button>
+      </div>
+
+      <div class="quick-section">
+        <div class="quick-section-title">🔎 Compliance Checklist</div>
+        <div class="compliance-checklist" id="complianceChecklist">
+          <div class="check-item"><span class="check-icon">📁</span>Documents uploaded</div>
+          <div class="check-item"><span class="check-icon">📋</span>Donor annex reviewed</div>
+          <div class="check-item"><span class="check-icon">✍️</span>Approval obtained</div>
+          <div class="check-item"><span class="check-icon">📊</span>Budget lines verified</div>
+          <div class="check-item"><span class="check-icon">📅</span>Reporting deadlines set</div>
+          <div class="check-item"><span class="check-icon">🧾</span>Receipts filed</div>
+        </div>
+      </div>
+
+      <div class="quick-section">
+        <div class="quick-section-title">👥 Key Roles</div>
+        <div class="role-item"><span class="role-dot" style="background:#0d2244"></span>Grants Manager</div>
+        <div class="role-item"><span class="role-dot" style="background:#c8a84b"></span>Finance Officer</div>
+        <div class="role-item"><span class="role-dot" style="background:#1a7a4a"></span>Compliance Officer</div>
+        <div class="role-item"><span class="role-dot" style="background:#b0282f"></span>Country Director</div>
+        <div class="role-item"><span class="role-dot" style="background:#6b7a99"></span>Programme Officer</div>
+      </div>
+    </aside>
+
+  </div><!-- /.body -->
+</div><!-- /.app -->
+
+<script>
+/* ═══════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════ */
+const state = {
+  uploadedFiles: [],
+  documentContents: {},   // filename → extracted text content
+  conversationHistory: [],
+  isLoading: false,
+  apiKey: ''
+};
+
+/* ═══════════════════════════════════════════════
+   FILE UPLOAD
+═══════════════════════════════════════════════ */
+async function handleFileUpload(event) {
+  const files = Array.from(event.target.files);
+  if (!files.length) return;
+
+  for (const file of files) {
+    if (state.uploadedFiles.find(f => f.name === file.name)) continue;
+
+    state.uploadedFiles.push(file);
+    const content = await extractTextFromFile(file);
+    state.documentContents[file.name] = content;
+  }
+
+  renderFileList();
+  updateDocBadge();
+  event.target.value = '';
+}
+
+async function extractTextFromFile(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
+        // For PDFs, store base64 and a marker
+        resolve('[PDF_BASE64:' + e.target.result.split(',')[1] + ']');
+      } else {
+        resolve(e.target.result || '');
+      }
+    };
+    reader.onerror = () => resolve('');
+
+    if (file.name.endsWith('.pdf')) {
+      reader.readAsDataURL(file);
+    } else {
+      reader.readAsText(file);
+    }
+  });
+}
+
+function getFileIcon(filename) {
+  const ext = filename.split('.').pop().toLowerCase();
+  if (['pdf'].includes(ext)) return { icon: '📕', cls: 'pdf' };
+  if (['doc','docx'].includes(ext)) return { icon: '📘', cls: 'doc' };
+  if (['xls','xlsx','csv'].includes(ext)) return { icon: '📗', cls: 'xls' };
+  if (['txt','md'].includes(ext)) return { icon: '📄', cls: 'txt' };
+  return { icon: '📋', cls: 'misc' };
+}
+
+function formatFileSize(bytes) {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
+  return (bytes/1024/1024).toFixed(1) + ' MB';
+}
+
+function renderFileList() {
+  const container = document.getElementById('fileListContainer');
+  if (!state.uploadedFiles.length) {
+    container.innerHTML = `<div class="empty-files"><div class="empty-files-icon">📄</div>No documents uploaded yet.<br/>Upload manuals, policies, SOPs &amp; annexes to begin.</div>`;
+    return;
+  }
+
+  container.innerHTML = state.uploadedFiles.map((file, i) => {
+    const fi = getFileIcon(file.name);
+    return `
+      <div class="file-item">
+        <div class="file-icon ${fi.cls}">${fi.icon}</div>
+        <div class="file-info">
+          <div class="file-name" title="${file.name}">${file.name}</div>
+          <div class="file-meta">${formatFileSize(file.size)} · Active</div>
+        </div>
+        <div class="file-status"></div>
+      </div>`;
+  }).join('');
+}
+
+function updateDocBadge() {
+  const n = state.uploadedFiles.length;
+  document.getElementById('docCountBadge').textContent = n + (n === 1 ? ' Doc' : ' Docs') + ' Loaded';
+}
+
+/* ═══════════════════════════════════════════════
+   CHAT LOGIC
+═══════════════════════════════════════════════ */
+function buildSystemPrompt() {
+  const hasDocuments = state.uploadedFiles.length > 0;
+
+  let docContext = '';
+  if (hasDocuments) {
+    docContext = '\n\nUPLOADED DOCUMENTATION KNOWLEDGE BASE:\n';
+    for (const [filename, content] of Object.entries(state.documentContents)) {
+      if (content.startsWith('[PDF_BASE64:')) {
+        docContext += `\n--- Document: ${filename} (PDF - content extracted below) ---\n[PDF document uploaded - analyze content if base64 provided in user message]\n`;
+      } else {
+        const truncated = content.length > 8000 ? content.substring(0, 8000) + '...[truncated]' : content;
+        docContext += `\n--- Document: ${filename} ---\n${truncated}\n`;
+      }
+    }
+  }
+
+  return `You are GRANT AI ALLIANCE MASTER — an expert internal Grants Management Compliance Advisor for a Grants Management Unit (GMU).
+
+YOUR CORE RULES (NEVER BREAK THESE):
+1. You ONLY answer using information found in the uploaded documents listed below.
+2. If information is not found in the uploaded documents, you MUST respond with exactly: "Information not available in the uploaded documentation."
+3. NEVER invent policies, thresholds, approval amounts, timelines, or rules.
+4. NEVER guess. If unclear, say so and recommend verification with a supervisor.
+5. Always flag compliance risks when you identify them.
+6. Always cite the document name when referencing a policy or procedure.
+
+${hasDocuments ? docContext : '\nNO DOCUMENTS UPLOADED YET: Until documents are uploaded, respond to every question with: "Information not available in the uploaded documentation. Please upload your organizational manuals, policies, SOPs, and donor annexes using the Upload button on the left panel."'}
+
+RESPONSE FORMAT:
+Structure all answers using these sections (only include sections relevant to the question):
+
+**🎯 Purpose**
+[Brief explanation of what this process/rule achieves]
+
+**👤 Responsible Roles**
+[Who is accountable — reference organigrams/role documents if uploaded]
+
+**📋 Required Documents**
+[List all documents needed]
+
+**📝 Step-by-Step Process**
+[Numbered steps, clear and actionable]
+
+**✅ Compliance Tips**
+[Key rules to follow, thresholds, donor requirements]
+
+**⚠️ Risks / Common Errors**
+[What typically goes wrong, what to watch out for]
+
+**📁 Source Reference**
+[Document name(s) where this information was found]
+
+TONE: Professional, supportive, compliance-focused, operationally practical. Speak like a knowledgeable internal Grants Compliance Advisor — not a robot.
+
+If the question is about roles/approval hierarchies, focus on the organigram and role documents uploaded.
+If the question is about eligibility or costs, focus on donor annexes and compliance guidelines.
+If the question is about process, focus on SOPs and grants manuals.`;
+}
+
+async function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const message = input.value.trim();
+  if (!message || state.isLoading) return;
+
+  input.value = '';
+  autoResize(input);
+
+  // Hide welcome card after first message
+  const welcomeCard = document.getElementById('welcomeCard');
+  if (welcomeCard) welcomeCard.style.display = 'none';
+
+  // Add user message
+  appendMessage('user', message);
+
+  // Add to history
+  state.conversationHistory.push({ role: 'user', content: message });
+
+  // Show typing indicator
+  const typingId = showTyping();
+  state.isLoading = true;
+  document.getElementById('sendBtn').disabled = true;
+
+  try {
+    const response = await callClaudeAPI(message);
+    removeTyping(typingId);
+    appendMessage('assistant', response);
+    state.conversationHistory.push({ role: 'assistant', content: response });
+  } catch (err) {
+    removeTyping(typingId);
+
+    let errorMsg = '';
+    if (err.message === 'NO_API_KEY') {
+      errorMsg = '🔑 **No API key connected.** Please paste your Anthropic API key in the yellow banner at the top of the page and click **Connect**.\n\nGet your key at: console.anthropic.com';
+    } else if (err.message === 'AUTH_ERROR') {
+      errorMsg = '🔑 **Invalid API key.** The key you entered was rejected by Anthropic.\n\nPlease click **Clear** in the banner above, re-enter your key, and try again. Make sure you copied the full key from console.anthropic.com.';
+    } else if (err.message === 'RATE_LIMIT') {
+      errorMsg = '⏱️ **Rate limit reached.** Too many requests in a short time. Please wait 30 seconds and try again.';
+    } else {
+      errorMsg = '⚠️ **Connection error:** ' + err.message + '\n\nPlease check:\n1. Your API key is entered and connected (yellow banner above)\n2. Your internet connection is working\n3. Your Anthropic account has billing enabled at console.anthropic.com';
+    }
+
+    appendMessage('assistant', errorMsg);
+  }
+
+  state.isLoading = false;
+  document.getElementById('sendBtn').disabled = false;
+}
+
+/* ═══════════════════════════════════════════════
+   API KEY MANAGEMENT
+═══════════════════════════════════════════════ */
+function saveApiKey() {
+  const input = document.getElementById('apiKeyInput');
+  const key = input.value.trim();
+
+  if (!key) {
+    input.style.borderColor = '#ef4444';
+    input.placeholder = 'Please enter your API key first';
+    setTimeout(() => {
+      input.style.borderColor = '';
+      input.placeholder = 'Paste your Anthropic API key here (sk-ant-...)';
+    }, 2000);
+    return;
+  }
+
+  if (!key.startsWith('sk-ant-')) {
+    input.style.borderColor = '#ef4444';
+    input.placeholder = 'Key should start with sk-ant-...';
+    input.value = '';
+    setTimeout(() => {
+      input.style.borderColor = '';
+      input.placeholder = 'Paste your Anthropic API key here (sk-ant-...)';
+    }, 2500);
+    return;
+  }
+
+  state.apiKey = key;
+
+  // Update UI to show connected state
+  const banner = document.getElementById('apiBanner');
+  const dot = document.getElementById('apiDot');
+  const keyInput = document.getElementById('apiKeyInput');
+
+  banner.classList.add('connected');
+  dot.classList.add('connected');
+  keyInput.classList.add('connected-input');
+  keyInput.type = 'text';
+  keyInput.value = key.substring(0, 12) + '••••••••••••••••' + key.slice(-4);
+  keyInput.disabled = true;
+
+  // Replace button with clear button
+  const btn = document.querySelector('.api-save-btn:not(.clear-btn)');
+  btn.textContent = 'Clear';
+  btn.classList.add('clear-btn');
+  btn.onclick = clearApiKey;
+
+  // Update banner text
+  banner.querySelector('strong').textContent = '✅ Connected:';
+  banner.querySelector('.api-help-link').style.display = 'none';
+
+  // Update header badge
+  document.getElementById('docCountBadge').style.background = 'rgba(26,122,74,.3)';
+  document.getElementById('docCountBadge').style.borderColor = '#86efac';
+  document.getElementById('docCountBadge').style.color = '#86efac';
+
+  updateStatusBar();
+}
+
+function clearApiKey() {
+  state.apiKey = '';
+
+  const banner = document.getElementById('apiBanner');
+  const dot = document.getElementById('apiDot');
+  const keyInput = document.getElementById('apiKeyInput');
+
+  banner.classList.remove('connected');
+  dot.classList.remove('connected');
+  keyInput.classList.remove('connected-input');
+  keyInput.type = 'password';
+  keyInput.value = '';
+  keyInput.disabled = false;
+  keyInput.placeholder = 'Paste your Anthropic API key here (sk-ant-...)';
+
+  const btn = document.querySelector('.api-save-btn.clear-btn');
+  btn.textContent = 'Connect';
+  btn.classList.remove('clear-btn');
+  btn.onclick = saveApiKey;
+
+  banner.querySelector('strong').textContent = 'API Key Required:';
+  banner.querySelector('.api-help-link').style.display = '';
+
+  updateStatusBar();
+}
+
+function updateStatusBar() {
+  const statusText = document.querySelector('.chat-status-text');
+  if (state.apiKey) {
+    statusText.innerHTML = 'AI Advisor is <span>Online</span> — Responding from uploaded documentation only';
+  } else {
+    statusText.innerHTML = 'AI Advisor <span style="color:#fbbf24">Needs API Key</span> — Enter your key in the banner above';
+  }
+}
+
+async function callClaudeAPI(userMessage) {
+  if (!state.apiKey) {
+    throw new Error('NO_API_KEY');
+  }
+
+  const systemPrompt = buildSystemPrompt();
+
+  // Build messages array — include history for context
+  const messages = [];
+
+  // Add conversation history (last 10 turns to keep context manageable)
+  const recentHistory = state.conversationHistory.slice(-10);
+  for (const msg of recentHistory) {
+    messages.push({ role: msg.role, content: msg.content });
+  }
+
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': state.apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-5-20250929',
+      max_tokens: 1500,
+      system: systemPrompt,
+      messages: messages
+    })
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    const msg = err.error?.message || '';
+    if (response.status === 401) throw new Error('AUTH_ERROR');
+    if (response.status === 429) throw new Error('RATE_LIMIT');
+    throw new Error(msg || 'API_ERROR');
+  }
+
+  const data = await response.json();
+  return data.content.map(b => b.text || '').join('');
+}
+
+/* ═══════════════════════════════════════════════
+   UI RENDERING
+═══════════════════════════════════════════════ */
+function appendMessage(role, content) {
+  const container = document.getElementById('chatMessages');
+
+  const msgDiv = document.createElement('div');
+  msgDiv.className = `message ${role}`;
+
+  const avatar = document.createElement('div');
+  avatar.className = `avatar ${role === 'user' ? 'user-avatar' : 'ai-avatar'}`;
+  avatar.textContent = role === 'user' ? 'YOU' : '🏛️';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  bubble.innerHTML = role === 'assistant' ? renderMarkdown(content) : escapeHtml(content);
+
+  msgDiv.appendChild(avatar);
+  msgDiv.appendChild(bubble);
+  container.appendChild(msgDiv);
+  container.scrollTop = container.scrollHeight;
+}
+
+function renderMarkdown(text) {
+  // Convert markdown-like formatting to HTML
+  let html = escapeHtml(text);
+
+  // Bold headers with emoji
+  html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+  // Numbered lists
+  html = html.replace(/^\d+\.\s(.+)$/gm, '<li class="step-li">$1</li>');
+  html = html.replace(/((<li class="step-li">.*<\/li>\n?)+)/g, '<ol class="step-list">$1</ol>');
+
+  // Bullet lists
+  html = html.replace(/^[-•]\s(.+)$/gm, '<li class="bullet-li">$1</li>');
+  html = html.replace(/((<li class="bullet-li">.*<\/li>\n?)+)/g, '<ul class="bullet-list">$1</ul>');
+
+  // Section dividers
+  html = html.replace(/\n\n/g, '</p><p>');
+  html = html.replace(/\n/g, '<br/>');
+
+  // Wrap in paragraph
+  html = '<p>' + html + '</p>';
+
+  // Compliance highlights
+  html = html.replace(/⚠️/g, '<span style="color:#b87a00">⚠️</span>');
+  html = html.replace(/✅/g, '<span style="color:#1a7a4a">✅</span>');
+  html = html.replace(/🎯/g, '<span>🎯</span>');
+  html = html.replace(/📋/g, '<span>📋</span>');
+  html = html.replace(/📁/g, '<span>📁</span>');
+
+  return html;
+}
+
+function escapeHtml(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function showTyping() {
+  const container = document.getElementById('chatMessages');
+  const id = 'typing-' + Date.now();
+
+  const wrapper = document.createElement('div');
+  wrapper.id = id;
+  wrapper.className = 'message assistant';
+
+  wrapper.innerHTML = `
+    <div class="avatar ai-avatar">🏛️</div>
+    <div class="typing-indicator">
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+    </div>`;
+
+  container.appendChild(wrapper);
+  container.scrollTop = container.scrollHeight;
+  return id;
+}
+
+function removeTyping(id) {
+  const el = document.getElementById(id);
+  if (el) el.remove();
+}
+
+/* ═══════════════════════════════════════════════
+   INPUT HELPERS
+═══════════════════════════════════════════════ */
+function handleKeyDown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function autoResize(textarea) {
+  textarea.style.height = 'auto';
+  textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
+}
+
+function useQuickPrompt(prompt) {
+  const input = document.getElementById('chatInput');
+  input.value = prompt;
+  autoResize(input);
+  input.focus();
+}
+</script>
+</body>
+</html>
